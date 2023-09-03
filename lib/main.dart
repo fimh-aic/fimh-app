@@ -1,22 +1,17 @@
+import 'package:camera/camera.dart';
 import 'package:fimh_app/presentation/pages/dashboard.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+late List<CameraDescription> cameras;
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'FIMH App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const DashboardPage(title: "Food Recommendation"),
-    );
-  }
+  cameras = await availableCameras();
+  runApp(MaterialApp(
+    theme: ThemeData.dark(),
+    home: DashboardPage(
+      camera: cameras.first,
+    ),
+  ));
 }
