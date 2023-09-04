@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key, required this.camera});
 
-  final String title = "FIMH App";
+  final String title = "NUTRIKU";
   final CameraDescription camera;
 
   @override
@@ -26,15 +26,22 @@ class _DashboardPageState extends State<DashboardPage> {
         child: Column(
           children: <Widget>[
             const SizedBox(height: 20),
-            const Text(
-              'Hello, please select your profil preference',
+            const Text("Welcome to", style: TextStyle(fontSize: 20)),
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Text("NUTRIKU",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            ),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 16),
+              child: Text('Please select your profil preference',
+                  style: TextStyle(fontSize: 16)),
             ),
             Row(
               children: [
                 Checkbox(
                   value: isDiet,
                   onChanged: (value) {
-                    print("change is diet");
                     setState(() {
                       isDiet = value!;
                     });
@@ -48,7 +55,6 @@ class _DashboardPageState extends State<DashboardPage> {
                 Checkbox(
                   value: isLactoseIntolerant,
                   onChanged: (value) {
-                    print("change is lactose intolerant");
                     setState(() {
                       isLactoseIntolerant = value!;
                     });
@@ -58,23 +64,23 @@ class _DashboardPageState extends State<DashboardPage> {
               ],
             ),
             const SizedBox(height: 20),
-            const Text("Select menu:"),
-            TextButton(
-              onPressed: () async {
-                print("open camera");
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => HomePage(camera: widget.camera),
-                  ),
-                );
-              },
-              child: const Text("Take a Picture"),
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Text("Let's Find Your Food Nutritions",
+                  style: TextStyle(fontSize: 20)),
             ),
             TextButton(
                 onPressed: () async {
-                  print("open search page");
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => HomePage(camera: widget.camera),
+                    ),
+                  );
                 },
-                child: const Text("Search")),
+                style: TextButton.styleFrom(
+                  textStyle: const TextStyle(fontSize: 20),
+                ),
+                child: const Text("Take a Picture")),
           ],
         ),
       ),

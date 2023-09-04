@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:fimh_app/presentation/pages/detail.dart';
+import 'package:fimh_app/domain/entity/food_recognition_entity.dart';
+import 'package:fimh_app/domain/usecase/get_food_name.dart';
 import 'package:flutter/material.dart';
 
-import '../../domain/entity/food_entity.dart';
+import '../../utils/injection/injection_container.dart';
+import 'detail.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.camera});
@@ -77,10 +79,22 @@ class _HomePageState extends State<HomePage> {
 }
 
 // A widget that displays the picture taken by the user.
-class DisplayPictureScreen extends StatelessWidget {
+class DisplayPictureScreen extends StatefulWidget {
   final String imagePath;
 
   const DisplayPictureScreen({super.key, required this.imagePath});
+
+  @override
+  State<DisplayPictureScreen> createState() => _DisplayPictureScreenState();
+}
+
+class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
+  final GetFoodName getFoodName = sl<GetFoodName>();
+
+  bool isSend = false;
+  bool isLoading = false;
+  bool isError = false;
+  FoodRecognitionEntity? food;
 
   @override
   Widget build(BuildContext context) {
@@ -89,32 +103,76 @@ class DisplayPictureScreen extends StatelessWidget {
       body: Center(
           child: Column(
         children: [
-          Image.file(File(imagePath)),
+          const SizedBox(height: 20),
+          SizedBox(
+            height: 350,
+            child: Image.file(File(widget.imagePath)),
+          ),
           const SizedBox(height: 16),
-          TextButton(
-              onPressed: () {
-                print("Kirim gambar");
-                // kirim ke API lalu navigator push
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => DetailPage(
-                          food: FoodEntity(
-                            name: "Apple",
-                            calories: 53,
-                            servingSize: 100,
-                            fatTotal: 0.2,
-                            fatSaturated: 0,
-                            protein: 0.3,
-                            sodium: 1,
-                            potassium: 11,
-                            cholesterol: 0,
-                            carbohydrates: 14.1,
-                            fiber: 2.4,
-                            sugar: 10.3,
-                          ),
-                          imagePath: imagePath,
-                        )));
+          // show circular indicator when loading submission
+          if (isSend && isLoading)
+            const CircularProgressIndicator()
+          else
+            const SizedBox(height: 16),
+
+          if (!isSend && !isLoading && !isError)
+            TextButton(
+              onPressed: () async {
+                if (isSend) {
+                  return;
+                } else {
+                  setState(() {
+                    isSend = true;
+                    isLoading = true;
+                  });
+                }
+
+                final res = await getFoodName(
+                    FoodImageParams(imagePath: widget.imagePath));
+
+                res.fold(
+                  (l) {
+                    // print(l.toString());
+                    setState(() {
+                      isError = true;
+                    });
+                  },
+                  (r) {
+                    setState(() {
+                      isError = false;
+                      food = r;
+                    });
+                    // print(
+                    // "Name: ${food!.name}; confidence: ${food!.confidence}");
+                  },
+                );
+                setState(() {
+                  isLoading = false;
+                });
               },
-              child: const Text("Cari gambar")),
+              child: const Text("Search"),
+            ),
+          if (isSend && !isLoading && isError) const Text("Error"),
+          if (isSend && !isLoading && !isError && food != null)
+            Column(
+              children: [
+                Text("Name: ${food!.name}"),
+                Text("Confidence: ${food!.confidence}"),
+                const SizedBox(height: 20),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => DetailPage(
+                            food: food!.nutrition,
+                            imagePath: widget.imagePath,
+                          ),
+                        ),
+                      );
+                    },
+                    child: const Text("Find Nutrition"))
+              ],
+            ),
         ],
       )),
     );

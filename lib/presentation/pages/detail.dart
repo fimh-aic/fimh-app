@@ -21,7 +21,7 @@ class _DetailPageState extends State<DetailPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Kandungan Nutrisi"),
+        title: const Text("Food Nutrition"),
       ),
       body: Center(
         child: Column(
@@ -34,7 +34,7 @@ class _DetailPageState extends State<DetailPage> {
             ),
             Padding(
               padding: const EdgeInsets.all(24),
-              child: Text(food.name,
+              child: Text(food.name.toUpperCase(),
                   style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -43,20 +43,20 @@ class _DetailPageState extends State<DetailPage> {
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text("Total Kalori: ${food.calories} cal"),
-                Text("Penyajian: ${food.servingSize} cal"),
-                Text("Karbohidrat: ${food.carbohydrates} g"),
-                Text("Total Lemak: ${food.fatTotal} g"),
-                Text("Lemak Jenuh: ${food.fatSaturated} g"),
-                Text("Gula: ${food.sugar} g"),
+                Text("Calories: ${food.calories} cal"),
+                Text("Serving Size: ${food.servingSize} cal"),
+                Text("Carbohydrates: ${food.carbohydrates} g"),
+                Text("Fat Total: ${food.fatTotal} g"),
+                Text("Fat Saturated: ${food.fatSaturated} g"),
+                Text("Sugar: ${food.sugar} g"),
                 Text("Protein: ${food.protein} g"),
                 Text("Sodium: ${food.sodium} mg"),
                 Text("Potassium: ${food.potassium} mg"),
-                Text("Zat Besi: ${food.fiber} g"),
+                Text("Fiber: ${food.fiber} g"),
               ],
             ),
             const SizedBox(height: 20),
-            const Text("Rekomendasi resep:"),
+            // const Text("Receipts recommendation:"),
           ],
         ),
       ),
