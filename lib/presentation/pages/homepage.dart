@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           } catch (e) {
-            print(e);
+            // print(e);
           }
         },
         child: const Icon(Icons.camera_alt),

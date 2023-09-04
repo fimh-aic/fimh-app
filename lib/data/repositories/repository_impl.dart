@@ -22,10 +22,7 @@ class RepositoryImpl implements Repository {
   Future<Either<Failure, FoodRecognitionEntity>> getFoodName(
       FoodImageParams params) async {
     try {
-      print("image");
-      print(params.imagePath);
       final food = await remoteDataSource.getFoodName(params.imagePath);
-      print("Repository food: ${food.name}");
       return Right(food);
     } catch (e) {
       return Left(ServerFailure());
